@@ -3,18 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Information</title>
+    <title>HealthTracker</title>
+    
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
     <!-- Custom CSS -->
-    <link href="/static/css/style.css" rel="stylesheet">
-    <style>
-         .container.mt-5 {
-            text-align: center; /* Horizontally center the text */
-        }
-    </style>
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
 </head>
 <body>
+
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="/">HealthTracker</a>
@@ -23,24 +21,40 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a class="nav-link" href="/">Home</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/calorie">Calorie Tracker</a>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/calorie">Calorie Logs</a>
                 </li>
             </ul>
         </div>
     </nav>
 
+
+
+
     <div class="container mt-5">
-        <h1>Welcome to HealthTracker!</h1>
-        <p>This will display the combined user information from other pages.</p>
+        <h1 class="text-center">Calorie Logs</h1>
+        <form id="calorie-form" class="form-group">
+            <label for="calories">Enter calories for today:</label>
+            <input type="number" id="calories" name="calories" class="form-control mb-3" required>
+            <button type="submit" class="btn btn-primary">Log Calories</button>
+        </form>
+
+        <h2 class="mt-5">Logged Calories</h2>
+        <ul id="calorie-list" class="list-group"></ul>
+
+        <!-- Button to clear logged calories -->
+        <button id="clear-button" class="btn btn-danger mt-3">Clear All Calories</button>
     </div>
 
-    <!-- Bootstrap JS -->
+    <!-- Bootstrap JS and dependencies (optional, for features like tooltips) -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Link to your JavaScript file -->
+    <script src="{{ url_for('static', filename='handleForm.js') }}"></script>
 </body>
 </html>

@@ -24,6 +24,11 @@ if not os.path.exists(DATA_FILE):
 def index():
     return render_template('index.html')
 
+# Route to server calorie.html
+@app.route('/calorie')
+def calorie_page():
+    return render_template('calorie.html')
+
 # Route to get the logged calorie data
 @app.route('/api/calories', methods=['GET'])
 def get_calories():
@@ -43,8 +48,13 @@ def log_calories():
         with open(DATA_FILE, 'r') as f:
             data = json.load(f)
 
+        new_entry = {
+            "calories": calorie_data['calories'],
+            "date": calorie_data.get('date','Unknown')
+        }
+
         # Append new calorie entry to the existing data
-        data.append(calorie_data)
+        data.append(new_entry)
 
         # Write updated data back to the JSON file
         with open(DATA_FILE, 'w') as f:
