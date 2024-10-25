@@ -1,30 +1,18 @@
 from flask import Flask, request, jsonify, render_template
-import json
-import os
-import csv 
+import flaskr.db as db 
 
 app = Flask(__name__)
 
-# File to store calorie data (simulates a database)
-DATA_FILE = 'data/calorie_data.json'
-CSV_FILE = 'data/calorie_data.csv'
-
-# Ensure data directory exists
-os.makedirs('data', exist_ok=True)
-
-# Initialize data file if it doesn't exist
-if not os.path.exists(DATA_FILE):
-    with open(DATA_FILE, 'w') as f:
-        json.dump([], f)
-
-  
+# Database initialization
+app.config['DATABASE'] = 'data/healthtracker.db'
+db.init_app(app=app)
 
 # Route to serve index.html
 @app.route('/')
 def index():
     return render_template('index.html')
 
-# Route to server calorie.html
+# Route to serve calorie.html
 @app.route('/calorie')
 def calorie_page():
     return render_template('calorie.html')
@@ -32,11 +20,15 @@ def calorie_page():
 # Route to get the logged calorie data
 @app.route('/api/calories', methods=['GET'])
 def get_calories():
-    with open(DATA_FILE, 'r') as f:
-        data = json.load(f)
+    databaseConnection = db.get_db()
+    cursor = databaseConnection.cursor()
+    sql = "SELECT calories, log_time FROM calories_log"  # Make sure to select log_time
+    cursor.execute(sql)
+    entries = cursor.fetchall()
+
+    # Convert entries to a list of dictionaries
+    data = [{'calories': entry[0], 'log_time': entry[1]} for entry in entries]  # Adjusted indexing
     return jsonify(data)
-
-
 
 # Route to log new calorie intake
 @app.route('/api/calories', methods=['POST'])
@@ -45,37 +37,31 @@ def log_calories():
     
     # Ensure that we are appending valid calorie entries
     if 'calories' in calorie_data and isinstance(calorie_data['calories'], int):
-        with open(DATA_FILE, 'r') as f:
-            data = json.load(f)
+        new_entry = (
+            calorie_data['calories'],
+            calorie_data.get('date', 'Unknown')
+        )
 
-        new_entry = {
-            "calories": calorie_data['calories'],
-            "date": calorie_data.get('date','Unknown')
-        }
+        # Log calorie data in sqlite3 database
+        databaseConnection = db.get_db()
+        sql = "INSERT INTO calories_log (calories, log_time) VALUES (?, ?)"  # Adjusted to match your table structure
+        cursor = databaseConnection.cursor()
+        cursor.execute(sql, new_entry)
+        databaseConnection.commit()
+        return jsonify({'message': 'Calories logged successfully'}), 201  # Added success response
 
-        # Append new calorie entry to the existing data
-        data.append(new_entry)
-
-        # Write updated data back to the JSON file
-        with open(DATA_FILE, 'w') as f:
-            json.dump(data, f)
-
-        return jsonify({'message': 'Calorie intake logged successfully!'}), 201
-    else:
-        return jsonify({'error': 'Invalid calorie data'}), 400
-
+    return jsonify({'error': 'Invalid data'}), 400  # Error handling for invalid data
 
 # Route to clear all logged calories
 @app.route('/api/calories/clear', methods=['DELETE'])
 def clear_calories():
-    with open(DATA_FILE, 'w') as f:
-        json.dump([], f)  # Clear the data
-
+    databaseConnection = db.get_db()  # Get the database connection
+    cur = databaseConnection.cursor()
     
-    return jsonify({'message': 'Calorie intake cleared successfully!'}), 200
-
-
-
+    # Clear all entries from the calories_log table
+    cur.execute("DELETE FROM calories_log")  # Adjusted the table name
+    databaseConnection.commit()  # Commit the transaction
+    return jsonify({'message': 'Calories cleared successfully'}), 200  # Added success response
 
 if __name__ == '__main__':
     app.run(debug=True)

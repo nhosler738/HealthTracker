@@ -12,25 +12,19 @@ function loadCalorieData() {
             calorieList.innerHTML = ''; // Clear the current list
             data.forEach(calorie => {
                 const listItem = document.createElement('li');
-                listItem.textContent = "Calories: " + calorie.calories; // Adjust this based on your data structure
-                listItem.classList.add('list-group-item', 'custom-list-item'); // Add your custom class
-                calorieList.appendChild(listItem);
+                listItem.textContent = "Calories: " + calorie.calories; // Accessing the calories
 
-                // display time in log entry
+                // Create a div to display the date of the calorie log entry
                 const dateItem = document.createElement('div');
-                dateItem.id = 'log-entry-date';
                 dateItem.className = 'log-date';
-                dateItem.textContent = "Date: " + new Date().toISOString().split('T')[0];
-                
+                dateItem.textContent = "Date: " + new Date(calorie.log_time).toISOString().split('T')[0]; // Use the date from the database
                 
                 listItem.appendChild(dateItem);
-                
-
+                calorieList.appendChild(listItem);
             });
         })
         .catch(error => console.error('Error loading calorie data:', error));
 }
-
 
 // Function to handle the form submission
 document.getElementById('calorie-form').addEventListener('submit', function (e) {
@@ -38,12 +32,10 @@ document.getElementById('calorie-form').addEventListener('submit', function (e) 
 
     const calories = document.getElementById('calories').value;
 
-    
-
     // Prepare the data to send
     const calorieData = {
         calories: parseInt(calories),  // Ensure it's a number
-        date: new Date().toISOString().split('T')[0]
+        date: new Date().toISOString().split('T')[0] // Send the current date
     };
 
     // Send the data to the server
