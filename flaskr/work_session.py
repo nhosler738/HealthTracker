@@ -1,6 +1,38 @@
 import pygetwindow as gw
+import time as t
 
-print(gw.getAllTitles())
+class work_session:
+    
+
+    # constructor
+    def __init__(self, work_list, app_list, name, session_goals):
+        # url variables
+        self.specified_work_urls = work_list
+
+        # app variables
+        self.specified_app_list = app_list
+
+        # stopwatch variables
+        self.start_time = None
+        self.elapsed_time = 0
+        self.running = False
+
+        self.name = name
+        self.session_goals = session_goals
+
+
+    def start_work_timer():
+        # first check if any common 
+        # non-work tabs or applications are open
+        non_work_tabs = []
+        non_app_tabs = []
+
+
+
+
+
+    
+        
 
 
 # list of tabs we want to be on
@@ -16,3 +48,6 @@ def check_tab():
 
 
 check_tab()
+
+
+

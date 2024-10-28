@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work Tracker Setup</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/static/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <h1>Specify Your Working Tabs and Applications</h1>
+    <form id="work-form">
+        <!-- Field for specifying working tabs -->
+        <label for="work-tabs">Working Tabs (URLs):</label><br>
+        <textarea id="work-tabs" name="work-tabs" rows="4" cols="50" placeholder="Enter URLs separated by commas..."></textarea><br><br>
+
+        <!-- Field for specifying applications -->
+        <label for="work-apps">Working Applications:</label><br>
+        <input type="text" id="work-apps" name="work-apps" placeholder="Enter application names, e.g., Chrome, VSCode"><br><br>
+
+        <!-- Submit button -->
+        <button type="submit">Save Preferences</button>
+    </form>
+
+    <!-- Handle the form data -->
+    <script src="/static/handleForm.js"></script>
+
+     <!-- Bootstrap JS -->
+     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

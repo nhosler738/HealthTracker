@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, render_template
 import flaskr.db as db 
+from flaskr.work_session import work_session
 
 app = Flask(__name__)
 
@@ -49,7 +50,6 @@ def log_calories():
         cursor.execute(sql, new_entry)
         databaseConnection.commit()
         return jsonify({'message': 'Calories logged successfully'}), 201  # Added success response
-
     return jsonify({'error': 'Invalid data'}), 400  # Error handling for invalid data
 
 # Route to clear all logged calories
@@ -62,6 +62,38 @@ def clear_calories():
     cur.execute("DELETE FROM calories_log")  # Adjusted the table name
     databaseConnection.commit()  # Commit the transaction
     return jsonify({'message': 'Calories cleared successfully'}), 200  # Added success response
+
+
+# WORK TIMER SECTION
+
+# store work sessions in memory
+work_session_list = []
+
+# save work session preferences to initialize a work session 
+# only one session at a time 
+@app.route('api/work-session/save-preferences', methods=['POST'])
+def save_preferences():
+    data = request.get_json()
+    work_tabs = data.get("tabs", [])
+    work_apps = data.get("apps", [])
+    session_goals = ""
+    name = ""
+
+    # if a session already in the list return error message
+    if len(work_session_list) > 0:
+        work_session_error_html = """
+        <div id="work-form-error">
+            You can only have one work session running at a time. 
+        </div"""
+    else:
+        new_work_session = work_session(work_list=work_tabs, app_list=work_apps,
+                                        name=name, session_goals=session_goals)
+
+    
+
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
